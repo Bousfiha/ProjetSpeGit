@@ -14,11 +14,7 @@ exp = rexp(TailleEch,lambda)
 
 ##Estimation du paramètre lambda
 denominateur = 0
-for (i in 1:TailleEch) {
-	denominateur <- denominateur + exp[i]
-}
-LambdaSimu[j] =TailleEch/denominateur
-
+LambdaSimu[j] = 1/mean(exp)
 }
 
 LambdaSimuMoy = mean(LambdaSimu)
