@@ -11,7 +11,6 @@ for ( j in 1:NbIt) {
 
 ##Simulation de la loi
 exp = rexp(TailleEch,lambda)
-
 ##Estimation du paramètre lambda
 denominateur = 0
 LambdaSimu[j] = 1/mean(exp)
