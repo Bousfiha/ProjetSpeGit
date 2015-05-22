@@ -6,6 +6,21 @@ eta = 1
 beta = 5
 sim <- rweibull(n,beta,eta)
 
+## Graphe de proba pour avoir des conditions initiales
+graphe <- matrix(0,n,2)
+graphe[,1] = sim[order(sim)]
+for (i in 1:n) {
+  graphe[i,1] = log(graphe[i,1])
+  graphe[i,2] = log(log(n/(n-i)))
+}
+graphe <- graphe[-n,]
+plot(graphe[,2]~graphe[,1])
+LM = lm(graphe[,2]~graphe[,1])
+abline(LM)
+origine=LM$coef[1]
+pente = LM$coef[2]
+eta0 = exp(origine)
+beta0 = pente
 ## Estimation des paramètres
  f <- function(param) {
 	eta = param[1]
@@ -19,7 +34,7 @@ simEta <- c(1:nbrExp)
 simBeta <- c(1:nbrExp)
 for (i in 1:nbrExp) {	
 	sim <- rweibull(n,beta,eta)
-	res <- optim(c(0.1,0.1),f)
+	res <- optim(c(eta0,beta0),f)
 	simEta[i] = res$par[1]
 	simBeta[i] = res$par[2]
 }
@@ -31,13 +46,15 @@ varBeta = mean(simBeta^2)-betaMoy^2
 
 ## Tests d'adéquation
 # Kolmogorov
-res <- ks.test(sim,"pweibull",beta,eta)
+betaEstime <- simBeta[nbrExp]
+etaEstime <- simEta[nbrExp]
+res <- ks.test(sim,"pweibull",betaEstime,etaEstime)
 K = sqrt(n)*res$statistic[1]
 # Cramer-von Mises
 f = c(1:30)
 simOrdre = sim[order(sim)]
 
 for (i in 1:30)
-  f[i] = pweibull(simOrdre[i],beta,eta)
+  f[i] = pweibull(simOrdre[i],betaEstime,etaEstime)
 funct = stepfun(simOrdre,c(0,f))
 cvm.test(sim,funct)
