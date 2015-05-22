@@ -42,7 +42,6 @@ CM = TestCVM$statistic*(1+0.16/TailleEch)
 
 ##Test d'Anderson Darling
 ## Calcul de la statistique d'Anderson Darling
-A = 0
 Sum = 0
 for ( i in 1:TailleEch) {
 	Sum = Sum + (2*i-1-2*TailleEch)*log(1-Ui[i])-(2*i-1)*log(Ui[i])
