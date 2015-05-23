@@ -22,22 +22,32 @@ VarMoy= mean(LambdaSimu^2)-LambdaSimuMoy^2
 exp = rexp(TailleEch,lambda)
 LambdaChap = 1/mean(exp)
 
+f = pexp(exp,LambdaChap)
+##f = pexp(exp)
+Ui= f[order(f)]
+
 ##Test de Kolmogorov Smirnov
-TestKS = ks.test(exp, "pexp", LambdaChap)
-KS = (TestKS$statistic - 0.2/TailleEch)*(sqrt(TailleEch)+0.26+0.5/sqrt(TailleEch))
-##TestKS = ks.test(exp,"rexp")
-##KS = (sqrt(TailleEch)+0.12+0.11/sqrt(TailleEch))*TestKS$statistic
+K1=c(1:TailleEch)
+K2=K1
+
+for (i in 1:TailleEch) {
+  K1[i] = i/TailleEch - Ui[i]
+  K2[i] = Ui[i] - (i-1)/TailleEch
+}
+  Max1 = max(K1)
+  Max2 = max(K2)
+
+D = max(K1,K2)
+K = (D-0.2/sqrt(TailleEch))*(sqrt(TailleEch)+0.26+0.5/sqrt(TailleEch))
+
 
 
 ##Test de Cramer-von Mises
 require(dgof)
-f = pexp(exp,LambdaChap)
-##f = pexp(exp)
-Ui= f[order(f)]
+
 y = stepfun(exp[order(exp)],c(0,Ui))
 TestCVM = cvm.test(exp,y)
 CM = TestCVM$statistic*(1+0.16/TailleEch)
-##CM = (TestCVM$statistic-0.4/TailleEch+0.6/TailleEch^2)*(1+1/n)
 
 
 ##Test d'Anderson Darling
