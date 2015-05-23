@@ -27,36 +27,26 @@ f = pexp(exp,LambdaChap)
 Ui= f[order(f)]
 
 ##Test de Kolmogorov Smirnov
-K1=c(1:TailleEch)
-K2=K1
-
-for (i in 1:TailleEch) {
-  K1[i] = i/TailleEch - Ui[i]
-  K2[i] = Ui[i] - (i-1)/TailleEch
-}
-  Max1 = max(K1)
-  Max2 = max(K2)
-
-D = max(K1,K2)
+source("KS.r")
+D = KS(Ui,TailleEch)
 K = (D-0.2/sqrt(TailleEch))*(sqrt(TailleEch)+0.26+0.5/sqrt(TailleEch))
 
 
 
 ##Test de Cramer-von Mises
-require(dgof)
-
-y = stepfun(exp[order(exp)],c(0,Ui))
-TestCVM = cvm.test(exp,y)
-CM = TestCVM$statistic*(1+0.16/TailleEch)
+##require(dgof)
+##y = stepfun(exp[order(exp)],c(0,Ui))
+##TestCVM = cvm.test(exp,y)
+source("CVM.r")
+W = CVM(Ui,TailleEch)
+CM = W*(1+0.16/TailleEch)
 
 
 ##Test d'Anderson Darling
 ## Calcul de la statistique d'Anderson Darling
-Sum = 0
-for ( i in 1:TailleEch) {
-	Sum = Sum + (2*i-1-2*TailleEch)*log(1-Ui[i])-(2*i-1)*log(Ui[i])
-}
-AD = (-TailleEch + Sum/TailleEch) 
-##AD
+source("AD.r")
+A = AD(Ui,TailleEch)
+AD = A*(1+0.6/TailleEch)
+
 
 
