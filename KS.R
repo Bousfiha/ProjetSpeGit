@@ -3,6 +3,8 @@
  
   
 KS<-function(Ui,TailleEch) {
+  K1 <- c(1:TailleEch)
+  K2 <- K1
   for (i in 1:TailleEch) {
     K1[i] = i/TailleEch - Ui[i]
     K2[i] = Ui[i] - (i-1)/TailleEch
