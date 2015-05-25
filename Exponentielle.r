@@ -7,7 +7,6 @@ NbIt = 1000
 
 LambdaSimu = c(1:1000)
 VarSimu = c(1:1000)
-tab_stat = c(1:1000)
 
 for ( j in 1:NbIt) {
 ##Simulation de la loi
@@ -64,7 +63,7 @@ rejeter_h0_ad = 0
 for ( i in 1:1000) {
   exp = rexp(TailleEch,lambda)
   ##f = pexp(exp,LambdaChap)
-  f=pnorm(exp,mean(exp),var(exp)
+  f=pnorm(exp,mean(exp),var(exp))
   
   Ui= f[order(f)]
   
