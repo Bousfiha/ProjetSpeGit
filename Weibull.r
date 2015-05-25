@@ -1,9 +1,9 @@
 ## Test d'un échantillion de loi de Weibull
-## Paramètres: Eta = 100       Beta =  3
+## Paramètres: Eta = 1       Beta =  5
 ## Taille Echantillion : 20
 n = 30
-eta = 100
-beta = 3
+eta = 1
+beta = 5
 sim <- rweibull(n,beta,eta)
 
 ## Graphe de proba pour avoir des conditions initiales
@@ -14,13 +14,13 @@ for (i in 1:n) {
   graphe[i,2] = log(log(n/(n-i)))
 }
 graphe <- graphe[-n,]
-#plot(graphe[,2]~graphe[,1])
+plot(graphe[,2]~graphe[,1])
 LM = lm(graphe[,2]~graphe[,1])
 abline(LM)
 origine=LM$coef[1]
 pente = LM$coef[2]
+eta0 = exp(origine)
 beta0 = pente
-eta0 = exp(-origine/beta0)
 ## Estimation des paramètres
  f <- function(param) {
 	eta = param[1]
@@ -44,48 +44,17 @@ betaMoy <- mean(simBeta)
 varEta = mean(simEta^2)-etaMoy^2
 varBeta = mean(simBeta^2)-betaMoy^2
 
-
-
-
-
-
 ## Tests d'adéquation
-simOrdre <- sim[order(sim)]
-simLog <- -log(sim)
-simLogOrdre <- simLog[order(simLog)]
-BetaEstime<-function(beta) {
-  -(-beta + sum(simLogOrdre)/n - sum(simLogOrdre*exp(-simLogOrdre/beta))/sum(exp(-simLogOrdre/beta)))
-}
-# Recherche du Beta0
-#Var = mean(simLogOrdre^2) - mean(simLogOrdre)^2
-#betaGumbel0 = sqrt(Var * 6/3.14^2)
-graphe <- matrix(0,n,2)
-graphe[,1] = simLogOrdre
-for (i in 1:n) {
-  graphe[i,2] = log(-log(i/n))
-}
-graphe <- graphe[-n,]
-plot(graphe[,2]~graphe[,1])
-LM = lm(graphe[,2]~graphe[,1])
-origineGumbel =LM$coef[1]
-penteGumbel = LM$coef[2]
-betaGumbel0 = -1/penteGumbel
-resOptim = optim(betaGumbel0,BetaEstime)
-betaGumbel = resOptim$par[1]
-etaGumbel = -betaGumbel*log(sum(exp(-simLogOrdre/betaGumbel)/n))
 # Kolmogorov
-betaK <- simBeta[nbrExp]
-etaK <- simEta[nbrExp]
-source("KS.r")
-f = c(1:30)
-f2 = f
-for (i in 1:30){
-  f[i] = pweibull(simOrdre[i],betaK,etaK)
-  f2[i] = pGumbel(simLogOrdre[i],betaGumbel,etaGumbel)
-}
-Dn <- KS(f,n)
-
+betaEstime <- simBeta[nbrExp]
+etaEstime <- simEta[nbrExp]
+res <- ks.test(sim,"pweibull",betaEstime,etaEstime)
+K = sqrt(n)*res$statistic[1]
 # Cramer-von Mises
-source("CVM.r")
-W = CVM(f2,n)
-W2 = (1+0.2/sqrt(n))*W
+f = c(1:30)
+simOrdre = sim[order(sim)]
+
+for (i in 1:30)
+  f[i] = pweibull(simOrdre[i],betaEstime,etaEstime)
+funct = stepfun(simOrdre,c(0,f))
+cvm.test(sim,funct)
