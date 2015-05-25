@@ -2,8 +2,8 @@
 ## Paramètres: Eta = 1       Beta =  5
 ## Taille Echantillion : 20
 n = 30
-eta = 1
-beta = 5
+eta = 100
+beta = 3
 sim <- rweibull(n,beta,eta)
 
 ## Graphe de proba pour avoir des conditions initiales
