@@ -54,38 +54,39 @@ simOrdre <- sim[order(sim)]
 simLog <- -log(sim)
 simLogOrdre <- simLog[order(simLog)]
 BetaEstime<-function(beta) {
-  -(-beta + sum(simLogOrdre)/n - sum(simLogOrdre*exp(-simLogOrdre/beta))/sum(exp(-simLogOrdre/beta)))
+  (-beta + sum(simLogOrdre)/n - sum(simLogOrdre*exp(-simLogOrdre/beta))/sum(exp(-simLogOrdre/beta)))
 }
 # Recherche du Beta0
 #Var = mean(simLogOrdre^2) - mean(simLogOrdre)^2
 #betaGumbel0 = sqrt(Var * 6/3.14^2)
-graphe <- matrix(0,n,2)
-graphe[,1] = simLogOrdre
-for (i in 1:n) {
-  graphe[i,2] = log(-log(i/n))
-}
-graphe <- graphe[-n,]
-plot(graphe[,2]~graphe[,1])
-LM = lm(graphe[,2]~graphe[,1])
-origineGumbel =LM$coef[1]
-penteGumbel = LM$coef[2]
-betaGumbel0 = -1/penteGumbel
-resOptim = optim(betaGumbel0,BetaEstime)
-betaGumbel = resOptim$par[1]
+#      graphe <- matrix(0,n,2)
+#      graphe[,1] = simLogOrdre
+#      for (i in 1:n) {
+#      graphe[i,2] = log(-log(i/n))
+#      }
+#      graphe <- graphe[-n,]
+#      plot(graphe[,2]~graphe[,1])
+#      LM = lm(graphe[,2]~graphe[,1])
+#      origineGumbel =LM$coef[1]
+#      penteGumbel = LM$coef[2]
+#      betaGumbel0 = -1/penteGumbel
+resOptim = optimize(function(x) abs(BetaEstime(x)),c(0,10))
+betaGumbel = resOptim$minimum
 etaGumbel = -betaGumbel*log(sum(exp(-simLogOrdre/betaGumbel)/n))
-# Kolmogorov
-betaK <- simBeta[nbrExp]
-etaK <- simEta[nbrExp]
-source("KS.r")
-f = c(1:30)
-f2 = f
+
+f2 = c(1:30)
 for (i in 1:30){
-  f[i] = pweibull(simOrdre[i],betaK,etaK)
   f2[i] = pGumbel(simLogOrdre[i],betaGumbel,etaGumbel)
 }
-Dn <- KS(f,n)
+# Kolmogorov
+Dn <- KS(f2,n)
+D2 <- sqrt(n)*Dn
 
 # Cramer-von Mises
 source("CVM.r")
 W = CVM(f2,n)
 W2 = (1+0.2/sqrt(n))*W
+
+#Anderson-Darling
+AD = AD(f2,n)
+A2 = AD*(1+0.2/sqrt(n))
