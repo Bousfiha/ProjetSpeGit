@@ -1,9 +1,9 @@
-## Ce fichier va tester la puissance des différents tests d'adéquation
-## on va simuler une loi weibull de Beta =5
-## et voir le taux de rejet si on suppose que c'est une loi exp
-beta = 1.5
-eta = 100
-n = 50
+## Simulation d'une loi expoentielle et vérification 
+## à alpha = 5%
+
+n = 60
+lambda = 1
+Itr = 5000
 
 compteurKS = 0
 compteurCM = 0
@@ -14,11 +14,9 @@ quantileKS = 1.094
 quantileCM = 0.222
 quantileAD = 1.321
 
-#Nombre d'itération
-Itr = 1000
 # Modele exp
 for (i in 1:Itr) {
-  sim <- rweibull(n,beta,eta)
+  sim <- rexp(n,lambda)
   lambda <- 1/mean(sim)
   f=pexp(sim,lambda)
   Ui= f[order(f)]
@@ -42,4 +40,8 @@ for (i in 1:Itr) {
   A2 = AD*(1+0.6/sqrt(n))
   if (A2 > quantileAD)
     compteurAD = compteurAD +1
-  }
+}
+
+BetaKS = 100*compteurKS/Itr
+BetaCM = 100*compteurCM/Itr
+BetaAD = 100*compteurAD/Itr
