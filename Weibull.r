@@ -2,7 +2,7 @@
 ## Paramètres: Eta = 1       Beta =  5
 ## Taille Echantillion : 20
 n = 30
-eta = 1
+eta = 100
 beta = 5
 sim <- rweibull(n,beta,eta)
 
@@ -45,21 +45,6 @@ varEta = mean(simEta^2)-etaMoy^2
 varBeta = mean(simBeta^2)-betaMoy^2
 
 ## Tests d'adéquation
-# Kolmogorov
-betaEstime <- simBeta[nbrExp]
-etaEstime <- simEta[nbrExp]
-res <- ks.test(sim,"pweibull",betaEstime,etaEstime)
-K = sqrt(n)*res$statistic[1]
-# Cramer-von Mises
-f = c(1:30)
-simOrdre = sim[order(sim)]
-
-for (i in 1:30)
-  f[i] = pweibull(simOrdre[i],betaEstime,etaEstime)
-funct = stepfun(simOrdre,c(0,f))
-cvm.test(sim,funct)
-
-simOrdre <- sim[order(sim)]
 simLog <- -log(sim)
 simLogOrdre <- simLog[order(simLog)]
 BetaEstime<-function(beta) {
