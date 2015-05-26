@@ -1,7 +1,7 @@
 ##Loi exponentielle
 rm(list=ls())
 
-lambda = 2
+lambda = 1
 TailleEch = 30
 NbIt = 1000
 
@@ -47,9 +47,13 @@ AD = A*(1+0.6/TailleEch)
 ##Test de puissance au seuil 5%
 ##Pour KS, quantile = 1.094
 
-quantile_KS = 1.094
-quantile_CM = 0.222
-quantile_AD = 1.321
+##quantile_KS = 1.094
+##quantile_CM = 0.222
+#quantile_AD = 1.321
+
+quantile_KS = 0.895
+quantile_CM = 0.126
+quantile_AD = 0.752
 
 retenir_h0_ks = 0
 rejeter_h0_ks = 0
@@ -68,14 +72,16 @@ for ( i in 1:1000) {
   Ui= f[order(f)]
   
   D = KS(Ui,TailleEch)
-  K = (D-0.2/TailleEch)*(sqrt(TailleEch)+0.26+0.5/sqrt(TailleEch))
+  ##K = (D-0.2/TailleEch)*(sqrt(TailleEch)+0.26+0.5/sqrt(TailleEch))
+  K = D*(sqrt(TailleEch)-0.01+0.85/sqrt(TailleEch))
   if (K > quantile_KS) 
     rejeter_h0_ks = rejeter_h0_ks + 1
   else
     retenir_h0_ks = retenir_h0_ks + 1
   
   W = CVM(Ui,TailleEch)
-  CM = W*(1+0.16/TailleEch)
+  ##CM = W*(1+0.16/TailleEch)
+  CM = W*(1+0.5/TailleEch)
   if (CM > quantile_CM) 
     rejeter_h0_cm = rejeter_h0_cm + 1
   else
@@ -83,7 +89,8 @@ for ( i in 1:1000) {
 
   source("AD.r")
   A = AD(Ui,TailleEch)
-  AD = A*(1+0.6/TailleEch)
+  ##AD = A*(1+0.6/TailleEch)
+  AD = A*(1+0.75/TailleEch+2.25/(TailleEch^2))
   
   if (AD > quantile_AD) 
     rejeter_h0_ad = rejeter_h0_ad + 1
