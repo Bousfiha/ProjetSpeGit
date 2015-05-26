@@ -6,7 +6,6 @@ TailleEch = 30
 NbIt = 1000
 
 LambdaSimu = c(1:1000)
-VarSimu = c(1:1000)
 
 for ( j in 1:NbIt) {
 ##Simulation de la loi
@@ -44,8 +43,7 @@ source("AD.r")
 A = AD(Ui,TailleEch)
 AD = A*(1+0.6/TailleEch)
 
-##Test de puissance au seuil 5%
-##Pour KS, quantile = 1.094
+##Test de puissance au seuil 5%s
 
 ##quantile_KS = 1.094
 ##quantile_CM = 0.222
@@ -64,7 +62,7 @@ rejeter_h0_cm = 0
 retenir_h0_ad = 0
 rejeter_h0_ad = 0
 
-for ( i in 1:1000) {
+for ( i in 1:NbIt) {
   exp = rexp(TailleEch,lambda)
   ##f = pexp(exp,LambdaChap)
   f=pnorm(exp,mean(exp),var(exp))
