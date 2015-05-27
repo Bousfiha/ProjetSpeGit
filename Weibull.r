@@ -19,7 +19,7 @@ LM = lm(graphe[,2]~graphe[,1])
 abline(LM)
 origine=LM$coef[1]
 pente = LM$coef[2]
-eta0 = exp(origine)
+eta0 = exp(-origine/pente)
 beta0 = pente
 ## Estimation des paramètres
  f <- function(param) {
@@ -73,6 +73,7 @@ for (i in 1:30){
   f2[i] = pGumbel(simLogOrdre[i],betaGumbel,etaGumbel)
 }
 # Kolmogorov
+source("KS.R")
 Dn <- KS(f2,n)
 D2 <- sqrt(n)*Dn
 
@@ -82,6 +83,7 @@ W = CVM(f2,n)
 W2 = (1+0.2/sqrt(n))*W
 
 #Anderson-Darling
+source("AD.r")
 AD = AD(f2,n)
 A2 = AD*(1+0.2/sqrt(n))
 
