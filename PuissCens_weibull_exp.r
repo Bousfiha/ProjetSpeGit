@@ -57,4 +57,10 @@ for ( k in 1:7 ) {
     ##KS = max(K) + 0.5/TailleEch
     
   }
+
 }
+
+plot(R,puissance_ad,pch=15,xlab="Données observées",ylab="puissance",col="red")
+title("Evolution de la puissance des tests d'AD et CM en fonction de R")
+par(new=TRUE)
+plot(R,puissance_cm,pch=16,xlab="Données observées",ylab="puissance",col="blue")

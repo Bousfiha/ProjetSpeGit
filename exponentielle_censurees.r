@@ -10,7 +10,7 @@ LambdaSimuMoy = c(1:100)
 VarMoy = c(1:100)
 ##Nombre de données observées (non censurées)
 
-for ( R in 1:100) {
+for ( R in 1:TailleEch) {
 
 
 for ( j in 1:NbIt) {
@@ -26,3 +26,9 @@ LambdaSimuMoy[R] = mean(LambdaSimu)
 VarMoy[R]= mean(LambdaSimu^2)-LambdaSimuMoy[R]^2
 
 }
+
+plot(c(1:TailleEch),LambdaSimuMoy,xlab="R",ylab="LambdaMoy",col="red")
+title("Evolution de LambdaMoy en fonction de R")
+
+plot(c(1:TailleEch),VarMoy,xlab="R",ylab="VarMoy",col="blue")
+title("Evolution de VarMoy en fonction de R")
