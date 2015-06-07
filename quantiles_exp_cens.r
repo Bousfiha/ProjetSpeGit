@@ -1,4 +1,5 @@
 ##Quantiles pour la loi exponentielle
+##pour un échantillon de taille 100
 
 ##Tableau de quantiles au seuil 5%
 ##en fonctiondu taux de censure
