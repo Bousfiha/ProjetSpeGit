@@ -58,3 +58,8 @@ for ( k in 1:7 ) {
   }
 
 }
+
+plot(R,alpha_ad,pch=20,xlab="Pourcentage des données observées",ylab="Risque de première espèce",col="blue",font.axis=2,cex=1.2)
+par(new=TRUE)
+plot(R,alpha_cm,pch=17,xlab="Pourcentage des données observées",ylab="Risque de première espèce",col="red",font.axis=2,cex=1.2)
+title("Evolution du lambda estimé en fonction de R",font.main=2)
