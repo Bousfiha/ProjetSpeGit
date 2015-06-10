@@ -5,8 +5,8 @@
 rm(list=ls())
 
 beta = 1.5
-eta = 100
-TailleEch = 100
+eta = 1
+TailleEch = 50
 NbIt = 1000
 
 source("quantiles_exp_cens.r")

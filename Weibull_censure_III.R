@@ -1,4 +1,4 @@
-## Simulation d'un echantillion censuré de type III (Multicensur�)
+## Simulation d'un echantillion censuré de type III (Multicensuré)
 simWeibIII <- function(n,beta,eta)
 {
 res = matrix(0,n,2)
