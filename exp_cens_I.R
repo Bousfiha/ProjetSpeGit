@@ -3,50 +3,42 @@
 
 rm(list=ls())
 
-lambda = 2
+lambda = 1
 TailleEch = 100
 NbIt = 1000
+table = matrix(0,81,2)
+Var_2 = table
 
-table = matrix(0,TailleEch,2)
-
-
-
-
+P=seq(from=0.1,to=0.9,by=0.01)
+for ( p in 1:81) {
+  tc = -log(1-P[p])/lambda
+  
   for ( j in 1:NbIt) { 
     R = 0
-   ##Simulation de la loi
+    ##Simulation de la loi
     exp = rexp(TailleEch,lambda)
     expOrd = exp[order(exp)]
-    tc = runif(1,expOrd[1],expOrd[TailleEch])
     for ( i in 1:TailleEch ) {
       if ( exp[i] <= tc)
         R = R + 1
-    }
-  
-    ##Estimation du paramètre lambda
-    LambdaSimu = -(1/tc)*log(1-R/TailleEch)
-    table[R,1] = table[R,1] + LambdaSimu
-    table[R,2] = table[R,2] + 1
-}
-
-for ( i in 1:TailleEch) {
-  if ( table[i,2] != 0)
-    table[i,1] = table[i,1]/table[i,2]
-  
-}
-##table = table[table[,2]>0,]
-r=0
-for ( i in 1:TailleEch) {
-  if ( table[,1][i] > 0) {
-      r = r+1
-   }  
-}
-
-LambdaChap=c(1:r)
-R=LambdaChap
-for ( i in 1:r) {
-  if ( table[,1][i] > 0) {
-    LambdaChap[i] = table[,1][i]
-    R[i] = table[,2][i]
+    }    
+    
+      if ( R == P[p]*TailleEch) {
+      ##Estimation du paramètre lambda
+      #LambdaSimu = -(1/tc)*log(1-R/TailleEch)
+      LambdaSimu = R/ (sum(expOrd[1:R])+(TailleEch-R)*tc)
+      Var_2[p,1] = table[p,1] + LambdaSimu^2
+      table[p,1] = table[p,1] + LambdaSimu
+      table[p,2] = table[p,2] + 1
+      }
   }  
 }
+Var = Var_2[,1]/table[,2]- (table[,1]/table[,2])^2
+table[,1] = table[,1]/table[,2]
+
+plot(P,Var,pch=20,xlab="R",ylab="Variance",col="blue",font.axis=2)
+title("Evolution de la variance en fonction de R",font.main=2)
+#plot(P,table[,1],ylim=c(0.9,1.1),pch=20,xlab="R",ylab="Moyenne du Lambda estimé",col="blue",font.axis=2)
+#title("Evolution de l'espérance du lambda estimé en fonction de R",font.main=2)
+
+#abline(h=lambda,col="red",font.main=2)

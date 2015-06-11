@@ -64,12 +64,19 @@ lambdaBetaRVar[R,2] = varEta
 lambdaBetaRVar[R,3] = varBeta
 #}
 #Graphes d'eta
-pdf("VarFonctionDeRII.pdf", height=5,width=10)
-par(mfrow = c(1,2))
+#pdf("VarFonctionDeRII.pdf", height=5,width=10)
+#par(mfrow = c(1,2))
 #plot(lambdaBetaRMoy[RInit:100,], main="Estimation de Eta en fonction de r",xlab="R", ylab="moy(Eta)", col="blue", pch=16)
 
-plot(lambdaBetaRVar[RInit:100,], main="Variance des estimation de Eta en fonction de r",xlab="R", ylab="Var(Eta)", col="red", pch=16)
+#plot(lambdaBetaRVar[RInit:100,], main="Variance des estimation de Eta en fonction de r",xlab="R", ylab="Var(Eta)", col="red", pch=16)
 #Graphes de Beta
 #plot(lambdaBetaRMoy[RInit:100,-2], main="Estimation de Beta en fonction de r",xlab="R", ylab="moy(Beta)", col="blue", pch=16)
-plot(lambdaBetaRVar[RInit:100,-2], main="Variance de Beta en fonction de r", xlab="R", ylab="Var(Beta)", col="red",  pch=16)
-dev.off()
+#plot(lambdaBetaRVar[RInit:100,-2], main="Variance de Beta en fonction de r", xlab="R", ylab="Var(Beta)", col="red",  pch=16)
+#dev.off()
+
+# Tests d'adéquations
+#Calcul de Zi*
+for ( j in 1:R) {
+  
+  Gi = (simOrdre[j+1]-simOrdre[j])/(Vi1-Vin)
+}

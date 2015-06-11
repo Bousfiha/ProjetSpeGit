@@ -1,0 +1,16 @@
+{
+    "contents" : "## Simulation d'un echantillion censuré de type III (Multicensuré)\nsimWeibIII <- function(n,beta,eta,facteur)\n{\nres = matrix(0,n,2)\nsim = rweibull(n,beta,eta)\nTc = rweibull(n,beta,eta*facteur)\nfor (i in 1:n) {\n  if (Tc[i]<sim[i]) {\n    res[i,2] = 0\n    res[i,1] = Tc[i]\n  } else {\n    res[i,2] = 1\n    res[i,1] = sim[i]\n  }   \n}\nreturn(res)\n}\n\n\n\nbeta = 3\neta = 100\nn = 100\nFacteurs = seq(0.01,3.2,0.01)\nAll = matrix(1,100,3) # première colonne Eta\n                     # deuxième colonne Beta\n                     # troisième colonne: nombre de sim\nk=1\n## Calcul de la moyenne et variance des estimations de paramètres\nfor (Facteur in Facteurs) {\n  for (h in 1:10) {\n    sim = simWeibIII(n,beta,eta,Facteur)\n    R = sum(sim[,2])\n    if (R<n/10)\n      break\n    simOrdre = sim[order(sim[,2], decreasing=TRUE),]\n    simObserve = simOrdre[1:R,1]\n    simObserve = simObserve[order(simObserve)]\n    ## Fontion pour estimer les paramètres\n    f <- function(param) {\n      eta = param[1]\n      beta = param[2]\n      -(R*log(beta) - R*beta*log(eta) + (beta-1)*sum(log(simOrdre)[1:R]) - (1/(eta^beta))*(sum((simOrdre^beta)[1:R])+(n-R)*simOrdre[R]^beta)) \n    }\n    ## Graphe de probabilite pour estimer les param initiaux de l'optim\n    graphe4 = matrix(1,R,2)\n    for (i in 1:R){\n      graphe4[i,1] = log(simObserve[i])\n      #Kaplan Meier\n      for (j in 1:R) {\n          if (simObserve[j]>simObserve[i]) {\n            break\n          }\n          graphe4[i,2] = graphe4[i,2]*(n-j)/(n-j+1)\n      }\n    }\n    graphe4[,2]= log(log(1/(graphe4[,2])))\n    if (R==n) {\n      graphe4 <- graphe4[-n,]\n    }\n\n  #par(new=TRUE)\n  #plot(graphe4, col=\"blue\", pch=16)\n\n  LM = lm(graphe4[,2]~graphe4[,1])\n  #abline(LM)\n  origine=LM$coef[1]\n  pente = LM$coef[2]\n  eta0 = exp(-origine/pente)\n  beta0 = pente\n  #Calcul de Eta et Beta\n  res <- optim(c(eta0,beta0),f)\n  EtaChapeau = res$par[1]\n  BetaChapeau = res$par[2]\n  All[R,1] = All[R,1] + EtaChapeau\n  All[R,2] = All[R,2] + BetaChapeau\n  All[R,3] = All[R,3] + 1\n  }\n}\n\nAll = All/All[,3]\n#Graphes d'eta\npdf(\"EtaFonctionDeRIII.pdf\", height=5,width=10)\n#par(mfrow = c(1,2))\nplot(All[10:100,1]~c(10:100), main=\"Estimation de Eta en fonction de r\",xlab=\"R\", ylab=\"Eta\", col=\"blue\", pch=16)\nabline(h = eta, col = \"red\", lty = \"dotted\",lwd=4)\ndev.off()\n#plot(lambdaBetaRVar[RInit:100,], main=\"Variance des estimation de Eta en fonction de r\",xlab=\"R\", ylab=\"Var(Eta)\", col=\"red\", pch=16)\n#Graphes de Beta\npdf(\"BetaFonctionDeRIII.pdf\", height=5,width=10)\nplot(All[10:100,2]~c(10:100), main=\"Estimation de Beta en fonction de r\",xlab=\"R\", ylab=\"Beta\", col=\"red\", pch=16)\nabline(h = beta, col = \"blue\", lty=\"dotted\", lwd=4)\n#plot(lambdaBetaRVar[RInit:100,-2], main=\"Variance de Beta en fonction de r\", xlab=\"R\", ylab=\"Var(Beta)\", col=\"red\",  pch=16)\ndev.off()\n\n## Tests d'adéquation\n",
+    "created" : 1434004500109.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3802621332",
+    "id" : "D5E5CC27",
+    "lastKnownWriteTime" : 1433961304,
+    "path" : "C:/Users/Utilisateur/Desktop/ProjetSpeGit/Weibull_censure_III.R",
+    "project_path" : "Weibull_censure_III.R",
+    "properties" : {
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
